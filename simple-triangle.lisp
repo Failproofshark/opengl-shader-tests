@@ -1,12 +1,12 @@
 (in-package :cl-user)
-(defpackage :open-gl-test
+(defpackage :simple-rectangle-test
   (:use :cl
         :sdl2
         :alexandria)
   (:export :main))
 (require :cl-opengl)
 
-(in-package :open-gl-test)
+(in-package :simple-rectangle-test)
 (defparameter *vertex-array* (let ((gl-array (gl:alloc-gl-array :float 8))
                                    (items #(-0.5 -0.5 0.5 -0.5 -0.5 0.5 0.5 0.5)))
                                (dotimes (i (length items))

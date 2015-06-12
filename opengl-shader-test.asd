@@ -3,4 +3,5 @@
   :depends-on (:sdl2
                :alexandria
                :cl-opengl)
-  :components ((:file "main")))
+  :components ((:file "vertex-array-objects")
+               (:file "simple-triangle")))
