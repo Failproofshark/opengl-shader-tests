@@ -2,6 +2,8 @@
 (defsystem "opengl-shader-test"
   :depends-on (:sdl2
                :alexandria
-               :cl-opengl)
-  :components ((:file "vertex-array-objects")
+               :cl-opengl
+               :sdl2-image)
+  :components ((:file "texture")
+               (:file "vertex-array-objects")
                (:file "simple-triangle")))
