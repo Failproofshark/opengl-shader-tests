@@ -16,17 +16,12 @@
       (setf (gl:glaref gl-array i) (aref lisp-array i)))
     gl-array))
 
-(defparameter *vertex-attribute-array* (create-gl-array :float #(-0.5 -0.5 1.0 0.0 0.0 0.0 0.0
-                                                                 0.5 -0.5 0.0 1.0 0.0 1.0 0.0
-                                                                 -0.5 0.5 0.0 0.0 1.0 0.0 1.0
-                                                                 0.5 0.5 1.0 1.0 1.0 1.0 1.0)))
+(defparameter *vertex-attribute-array* (create-gl-array :float #(-0.5 -0.5 1.0 1.0 1.0 1.0 1.0
+                                                                  0.5 -0.5 1.0 1.0 1.0 0.0 1.0
+                                                                 -0.5  0.5 1.0 1.0 1.0 1.0 0.0
+                                                                  0.5  0.5 1.0 1.0 1.0 0.0 0.0)))
 
 (defparameter *element-attribute-array* (create-gl-array :unsigned-short #(0 1 2 3)))
-
-(defparameter *vertex-shader-source* (read-file-into-string (asdf:system-relative-pathname 'opengl-shader-test
-                                                                                           "texture-vertex-shader.glsl")))
-(defparameter *fragment-shader-source* (read-file-into-string (asdf:system-relative-pathname 'opengl-shader-test
-                                                                                             "texture-fragment-shader.glsl")))
 
 (defun main ()
   (with-init (:everything)
@@ -45,13 +40,13 @@
               (fragment-shader (gl:create-shader :fragment-shader))
               (shader-program (gl:create-program)))
           
-          (gl:shader-source vertex-shader *vertex-shader-source*)
+          (gl:shader-source vertex-shader (read-file-into-string (asdf:system-relative-pathname 'opengl-shader-test
+                                                                                           "texture-vertex-shader.glsl")))
           (gl:compile-shader vertex-shader)
-          (print (gl:get-shader-info-log vertex-shader))
           
-          (gl:shader-source fragment-shader *fragment-shader-source*)
+          (gl:shader-source fragment-shader (read-file-into-string (asdf:system-relative-pathname 'opengl-shader-test
+                                                                                             "texture-fragment-shader.glsl")))
           (gl:compile-shader fragment-shader)
-          (print (gl:get-shader-info-log fragment-shader))
           
           (gl:attach-shader shader-program vertex-shader)
           (gl:attach-shader shader-program fragment-shader)
@@ -94,7 +89,7 @@
           (gl:tex-parameter :texture-2d :texture-wrap-s :clamp-to-border)
           (gl:tex-parameter :texture-2d :texture-wrap-t :clamp-to-border)
           (gl:generate-mipmap :texture-2d)
-          (gl:tex-parameter :texture-2d :texture-min-filter :linear-mipmap-linear)
+          (gl:tex-parameter :texture-2d :texture-min-filter :linear)
           (gl:tex-parameter :texture-2d :texture-mag-filter :linear)
           (gl:tex-image-2d :texture-2d
                            0
