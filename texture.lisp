@@ -1,3 +1,4 @@
+;; Even though cl-sdl2 provides a binding to gl-bindtexture, create-texture-from-surface requires a renderer which I could not find when using opengl to render stuff
 (in-package :cl-user)
 (defpackage :texture-test
   (:use :cl
