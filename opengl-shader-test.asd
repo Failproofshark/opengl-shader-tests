@@ -6,4 +6,4 @@
                :sdl2-image)
   :components ((:file "texture")
                (:file "vertex-array-objects")
-               (:file "simple-triangle")))
+               (:file "simple-rectangle-test")))
