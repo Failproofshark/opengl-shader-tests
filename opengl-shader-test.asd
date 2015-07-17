@@ -3,7 +3,9 @@
   :depends-on (:sdl2
                :alexandria
                :cl-opengl
-               :sdl2-image)
+               :sdl2-image
+               :glkit)
   :components ((:file "texture")
                (:file "vertex-array-objects")
-               (:file "simple-rectangle-test")))
+               (:file "simple-rectangle-test")
+               (:file "glkittest")))
