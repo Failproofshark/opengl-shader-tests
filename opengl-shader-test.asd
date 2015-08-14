@@ -4,7 +4,8 @@
                :alexandria
                :cl-opengl
                :sdl2-image
-               :glkit)
+               :glkit
+               :mathkit)
   :components ((:file "texture")
                (:file "vertex-array-objects")
                (:file "simple-rectangle-test")

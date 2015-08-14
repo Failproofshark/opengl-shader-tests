@@ -6,6 +6,7 @@
 
 (in-package :glkit-test)
 (require :glkit)
+(require :mathkit)
 
 (kit.gl.shader:defdict my-shader (:shader-path (asdf:system-source-directory :opengl-shader-test))
   (kit.gl.shader:program (:basic-shader
@@ -24,9 +25,13 @@
       (with-gl-context (gl-context window)
         (gl-make-current window gl-context)
         (gl:viewport 0 0 800 600)
+
         (let* ((shader-dictionary-object (kit.gl.shader:compile-shader-dictionary 'my-shader))
-               (element-array-buffer (gl:gen-buffers 1))
-               (element-array (gl:alloc-gl-array :unsigned-short 4))
+               (element-array-buffer (first (gl:gen-buffers 1)))
+               (element-array (let ((element-array (gl:alloc-gl-array :unsigned-short 4)))
+                                (dotimes (i 4)
+                                  (setf (gl:glaref element-array i) i))
+                                element-array))
                (verticies (make-array 8
                                       :element-type 'single-float
                                       :initial-contents '(-0.5 -0.5   
@@ -40,20 +45,23 @@
                                                        0.0 0.0 1.0 
                                                        1.0 1.0 1.0)))
                (vao (make-instance 'kit.gl.vao:vao :type 'basic-vao)))
-          (dotimes (i 4)
-            (setf (gl:glaref element-array i) i))
+          
           (kit.gl.shader:use-program shader-dictionary-object :basic-shader)
+          (gl:bind-buffer :element-array-buffer element-array-buffer)
+          
+          (gl:buffer-data :element-array-buffer :static-draw element-array)
+          (gl:free-gl-array element-array)
+          
           (kit.gl.vao:vao-buffer-vector vao
                                         0
                                         (* 4 (length verticies))
                                         verticies)
+          
           (kit.gl.vao:vao-buffer-vector vao
                                         1
                                         (* 4 (length colors))
                                         colors)
-          (gl:bind-buffer :element-array-buffer (first element-array-buffer))
-          (gl:buffer-data :element-array-buffer :static-draw element-array)
-          (gl:free-gl-array element-array)
+
           (with-event-loop (:method :poll)
             (:idle ()
                    (gl:clear-color 0.0 0.0 0.0 0.0)
@@ -62,5 +70,6 @@
                                      (gl:make-null-gl-array :unsigned-short)
                                      :count 4)
                    (gl-swap-window window))
-            (:quit ()
+            (:quit (kit.gl.vao:vao-unbind vao)
+                   (gl:delete-buffers `(,element-array-buffer))
                    t)))))))
