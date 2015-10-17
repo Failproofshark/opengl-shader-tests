@@ -5,8 +5,10 @@
                :cl-opengl
                :sdl2-image
                :glkit
-               :mathkit)
+               :mathkit
+               :sb-cga)
   :components ((:file "texture")
                (:file "vertex-array-objects")
                (:file "simple-rectangle-test")
-               (:file "glkittest")))
+               (:file "glkittest")
+               (:file "render-multiple-objects")))
