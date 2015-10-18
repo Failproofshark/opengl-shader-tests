@@ -44,7 +44,7 @@
                                                                            -0.5 0.5 1.0 1.0 0.0
                                                                            -0.5 -0.5 1.0 0.0 0.0)))
                  (square-translate-scale-matrix (sb-cga:matrix* (sb-cga:translate* 200.0 300.0 0.0)
-                                                                (sb-cga:scale* 50.0 50.0 0.0)))
+                                                                (sb-cga:scale* 100.0 100.0 0.0)))
                  (triangle-vao (make-instance 'kit.gl.vao:vao :type 'flat-vao))
                  (triangle-vertex-color-data (make-array 15
                                                          :element-type 'single-float
@@ -52,7 +52,8 @@
                                                                              0.5 -0.5 0.0 1.0 0.0
                                                                              0.0 0.5 0.0 0.0 1.0)))
                  (triangle-translate-scale-matrix (sb-cga:matrix* (sb-cga:translate* 600.0 300.0 0.0)
-                                                                  (sb-cga:scale* 50.0 50.0 0.0))))
+                                                                  (sb-cga:scale* 50.0 50.0 0.0)))
+                 (angle-of-rotation 0.0))
             (kit.gl.shader:use-program shader :basic-shader)
 
             (kit.gl.vao:vao-buffer-vector square-vao
@@ -73,17 +74,34 @@
                      (kit.gl.shader:uniform-matrix shader
                                                    :model-view-projection-matrix
                                                    4
-                                                   (vector (sb-cga:matrix* projection-matrix square-translate-scale-matrix)))
+                                                   (vector (sb-cga:matrix* projection-matrix
+                                                                           square-translate-scale-matrix
+                                                                           (sb-cga:rotate-around (make-array 3
+                                                                                                             :element-type 'single-float
+                                                                                                             :adjustable nil
+                                                                                                             :fill-pointer nil
+                                                                                                             :displaced-to nil
+                                                                                                             :initial-contents '(0.0 0.0 1.0))
+                                                                                                 (kit.math:deg-to-rad angle-of-rotation)))))
                      (kit.gl.vao:vao-draw square-vao
                                           :primitive :triangles
                                           :count 6)
                      (kit.gl.shader:uniform-matrix shader
                                                    :model-view-projection-matrix
                                                    4
-                                                   (vector (sb-cga:matrix* projection-matrix triangle-translate-scale-matrix)))
+                                                   (vector (sb-cga:matrix* projection-matrix
+                                                                           triangle-translate-scale-matrix
+                                                                           (sb-cga:rotate-around (make-array 3
+                                                                                                             :element-type 'single-float
+                                                                                                             :adjustable nil
+                                                                                                             :fill-pointer nil
+                                                                                                             :displaced-to nil
+                                                                                                             :initial-contents '(0.0 0.0 1.0))
+                                                                                                 (kit.math:deg-to-rad (- angle-of-rotation))))))
                      (kit.gl.vao:vao-draw triangle-vao
                                           :primitive :triangles
                                           :count 3)
+                     (incf angle-of-rotation)
                      (gl-swap-window window))
               (:quit (kit.gl.vao:vao-unbind square-vao)
                      t))))))))
