@@ -28,39 +28,39 @@
 
         (let* ((shader (kit.gl.shader:compile-shader-dictionary 'my-shader))
                (projection-matrix (kit.math:ortho-matrix 0 800 0 600 -1 1))
-               
-               (square-vao (make-instance 'kit.gl.vao:vao :type 'flat-vao))
-               (square-vertex-color-data (make-array 30
-                                                     :element-type 'single-float
-                                                     :initial-contents '(-0.5 -0.5 1.0 0.0 0.0
-                                                                         0.5 -0.5  0.0 1.0 0.0
-                                                                         0.5  0.5 0.0 0.0 1.0
-                                                                         0.5  0.5 0.0 0.0 1.0
-                                                                         -0.5 0.5 1.0 1.0 0.0
-                                                                         -0.5 -0.5 1.0 0.0 0.0)))
+               (square-vao (let ((new-vao (make-instance 'kit.gl.vao:vao :type 'flat-vao))
+                                 (vertex-attribs (make-array 30
+                                                             :element-type 'single-float
+                                                             :initial-contents '(-0.5 -0.5 1.0 0.0 0.0
+                                                                                 0.5 -0.5  0.0 1.0 0.0
+                                                                                 0.5  0.5 0.0 0.0 1.0
+                                                                                 0.5  0.5 0.0 0.0 1.0
+                                                                                 -0.5 0.5 1.0 1.0 0.0
+                                                                                 -0.5 -0.5 1.0 0.0 0.0))))
+                             (kit.gl.vao:vao-buffer-vector new-vao
+                                                           0
+                                                           (* 4 (length vertex-attribs))
+                                                           vertex-attribs)
+                             new-vao))
+
                (square-translate-scale-matrix (sb-cga:matrix* (sb-cga:translate* 200.0 300.0 0.0)
                                                               (sb-cga:scale* 100.0 100.0 0.0)))
-               (triangle-vao (make-instance 'kit.gl.vao:vao :type 'flat-vao))
-               (triangle-vertex-color-data (make-array 15
+               (triangle-vao (let ((new-vao (make-instance 'kit.gl.vao:vao :type 'flat-vao))
+                                   (vertex-attribs (make-array 15
                                                        :element-type 'single-float
                                                        :initial-contents '(-0.5 -0.5 1.0 0.0 0.0
                                                                            0.5 -0.5 0.0 1.0 0.0
-                                                                           0.0 0.5 0.0 0.0 1.0)))
+                                                                           0.0 0.5 0.0 0.0 1.0))))
+                               (kit.gl.vao:vao-buffer-vector new-vao
+                                                             0
+                                                             (* 4 (length vertex-attribs))
+                                                             vertex-attribs)
+                               new-vao))
                (triangle-translate-scale-matrix (sb-cga:matrix* (sb-cga:translate* 600.0 300.0 0.0)
                                                                 (sb-cga:scale* 50.0 50.0 0.0)))
                (angle-of-rotation 0.0))
+          
           (kit.gl.shader:use-program shader :basic-shader)
-
-          (kit.gl.vao:vao-buffer-vector square-vao
-                                        0
-                                        (* 4 (length square-vertex-color-data))
-                                        square-vertex-color-data)
-
-          (kit.gl.vao:vao-buffer-vector triangle-vao
-                                        0
-                                        (* 4 (length triangle-vertex-color-data))
-                                        triangle-vertex-color-data)
-
           
           (with-event-loop (:method :poll)
             (:idle ()
@@ -98,5 +98,6 @@
                                         :count 3)
                    (incf angle-of-rotation)
                    (gl-swap-window window))
-            (:quit (kit.gl.vao:vao-unbind square-vao)
+            (:quit ()
+                   (kit.gl.vao:vao-unbind square-vao)
                    t)))))))
