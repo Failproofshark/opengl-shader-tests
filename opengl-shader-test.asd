@@ -11,4 +11,9 @@
                (:file "vertex-array-objects")
                (:file "simple-rectangle-test")
                (:file "glkittest")
-               (:file "render-multiple-objects")))
+               (:file "render-multiple-objects")
+               (:file "split-shader")
+               (:file "split-vao")
+               (:file "test-entity" :depends-on ("split-vao"))
+               (:file "split-render-test" :depends-on ("split-shader"
+                                                       "test-entity"))))
